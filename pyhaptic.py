@@ -2,8 +2,7 @@ import evdev
 import json
 import threading
 import time
-import websockets
-from websockets.sync.client import connect
+import websocket
 
 P_SPATIAL   = 0x00
 P_TEMPORAL  = 0x80
@@ -49,9 +48,8 @@ class Signal:
 
 class Hap2U2:
     def __init__(self) :
-        with connect("ws://localhost:1992") as socket:
-            self.socket = socket
-
+        self.socket = websocket.WebSocket()
+        self.socket.connect("ws://localhost:1992/")
 
         self.device = evdev.InputDevice("/dev/input/event0")
         self.thread = threading.Thread(target=self.pollTouch)
