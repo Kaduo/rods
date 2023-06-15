@@ -35,14 +35,14 @@ muted_colors = {"white": (238, 240, 239, MUTED_OPACITY), "red": (210, 34, 44, MU
 
 EPSILON = 0
 
-ROD_HEIGHT = 30
+ROD_HEIGHT = 60
 ROD_UNIT_WIDTH = 60
 
 BORDER_COLOR = (255, 255, 255)
 BACKGROUND_COLOR = (0, 0, 0)
 NB_RODS = 10
 
-OFF_SIZE = 30
+OFF_SIZE = 40
 off_button = shapes.Rectangle(x=window.width - OFF_SIZE, y= window.height - OFF_SIZE, height=OFF_SIZE, width=OFF_SIZE, color=colors["red"])
 
 rods_menu = []
