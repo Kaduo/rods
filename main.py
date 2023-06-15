@@ -4,7 +4,7 @@ from enum import Enum
 import pyglet
 from pyglet import shapes
 
-window = pyglet.window.Window(width=1000, height=560)
+window = pyglet.window.Window(fullscreen=True)
 
 colors = {"white": (238, 240, 239), "red": (210, 34, 44), "green": (65, 173, 74),
           "purple": (154, 64, 152), "yellow": (255, 221, 2), "dark_green": (2, 106, 59),
