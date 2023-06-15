@@ -64,20 +64,20 @@ class Hap2U2:
 
         self.socket.send(json.dumps(req))
 
-    async def add_signal(self, angle, pulses, signal) :
+    def add_signal(self, angle, pulses, signal) :
         req = {
             "func": "hap2u2_add_signal",
             "args": [angle, pulses, signal.__dict__],
         }
 
-        await self.socket.send(json.dumps(req))
+        self.socket.send(json.dumps(req))
 
-    async def clear(self) :
+    def clear(self) :
         req = {
             "func": "hap2u2_clear",
         }
 
-        await self.socket.send(json.dumps(req))
+        self.socket.send(json.dumps(req))
 
     def on_touch(self, action, x, y, time) :
         req = {
