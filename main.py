@@ -12,6 +12,8 @@ colors = {"white": (238, 240, 239), "red": (210, 34, 44), "green": (65, 173, 74)
 
 MUTED_OPACITY = 200
 
+print(window.width, window.height)
+
 muted_colors = {"white": (238, 240, 239, MUTED_OPACITY), "red": (210, 34, 44, MUTED_OPACITY), "green": (65, 173, 74, MUTED_OPACITY),
           "purple": (154, 64, 152, MUTED_OPACITY), "yellow": (255, 221, 2, MUTED_OPACITY), "dark_green": (2, 106, 59, MUTED_OPACITY),
           "black": (255, 255, 255, MUTED_OPACITY), "brown": (151, 75, 57, MUTED_OPACITY), "blue": (2, 178, 235, MUTED_OPACITY), "orange": (32, 225, 248, MUTED_OPACITY)}
@@ -21,11 +23,14 @@ EPSILON = 0
 ROD_HEIGHT = 20
 ROD_UNIT_WIDTH = 40
 
+BORDER_COLOR=(255,255,255)
+NB_RODS = 10
+
 rods_menu = []
 for i, color in enumerate(muted_colors.values()):
     rods_menu.append(
-        shapes.Rectangle(x=0, y=(i + 1) * ROD_HEIGHT, width=ROD_UNIT_WIDTH * (i + 1), height=ROD_HEIGHT,
-                         color=color))
+        shapes.BorderedRectangle(x=0, y=window.height - ROD_HEIGHT*NB_RODS + i * ROD_HEIGHT, width=ROD_UNIT_WIDTH * (i + 1), height=ROD_HEIGHT,
+                         color=color, border_color=BORDER_COLOR))
 
 rods = []
 
@@ -143,7 +148,7 @@ def on_mouse_press(x, y, button, modifiers):
             target_rod = rods_menu[rod_to_hold]
             r,g,b,_ = target_rod.color
             color = (r,g,b)
-            held_rod = shapes.Rectangle(x=target_rod.x, y=target_rod.y, color=color, width=target_rod.width, height=target_rod.height)
+            held_rod = shapes.BorderedRectangle(x=target_rod.x, y=target_rod.y, color=color, width=target_rod.width, height=target_rod.height, border_color=BORDER_COLOR)
             held_rod.anchor_x = x - held_rod.x
             held_rod.anchor_y = y - held_rod.y
             held_rod.x = x
