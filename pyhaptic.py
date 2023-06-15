@@ -49,7 +49,7 @@ class Signal:
 
 class Hap2U2:
     def __init__(self) :
-        with connect("ws://localhost:8765") as socket:
+        with connect("ws://localhost:1992") as socket:
             self.socket = socket
 
 
