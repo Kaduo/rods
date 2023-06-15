@@ -122,6 +122,7 @@ def relative_positionX(rec1, rec2, epsilon=0):
 
 @window.event
 def on_mouse_press(x, y, button, modifiers):
+    print("hi")
     global held_rod
     rod_to_hold = None
     for i, rod in enumerate(rods):
