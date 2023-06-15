@@ -56,7 +56,7 @@ class Hap2U2:
         self.thread.daemon = True
         self.thread.start()
 
-    def set_signal(self, angle, pulses, signal) :
+    def set_signal(self, angle, pulses, signal):
         req = {
             "func": "hap2u2_set_signal",
             "args": [angle, pulses, signal.__dict__],
@@ -64,20 +64,20 @@ class Hap2U2:
 
         self.socket.send(json.dumps(req))
 
-    def add_signal(self, angle, pulses, signal) :
+    async def add_signal(self, angle, pulses, signal) :
         req = {
             "func": "hap2u2_add_signal",
             "args": [angle, pulses, signal.__dict__],
         }
 
-        self.socket.send(json.dumps(req))
+        await self.socket.send(json.dumps(req))
 
-    def clear(self) :
+    async def clear(self) :
         req = {
             "func": "hap2u2_clear",
         }
 
-        self.socket.send(json.dumps(req))
+        await self.socket.send(json.dumps(req))
 
     def on_touch(self, action, x, y, time) :
         req = {
