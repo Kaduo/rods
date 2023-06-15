@@ -159,7 +159,7 @@ def on_mouse_press(x, y, button, modifiers):
         held_rod.x = x
         held_rod.y = y
         if HAPTIC:
-            SIGNAL = signals[held_rod.width//ROD_UNIT_WIDTH]
+            SIGNAL = signals[held_rod.width//ROD_UNIT_WIDTH - 1]
     else:
         for i, rod in enumerate(rods_menu):
             if within_rectangle(x, y, rod):
@@ -176,7 +176,7 @@ def on_mouse_press(x, y, button, modifiers):
             held_rod.x = x
             held_rod.y = y
             if HAPTIC:
-                SIGNAL = signals[held_rod.width // ROD_UNIT_WIDTH]
+                SIGNAL = signals[held_rod.width // ROD_UNIT_WIDTH - 1]
 
 
 @window.event
