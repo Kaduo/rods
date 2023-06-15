@@ -1,7 +1,7 @@
-import copy
 from enum import Enum
 
 import pyglet
+import pyhaptic
 from pyglet import shapes
 
 window = pyglet.window.Window(fullscreen=True)
