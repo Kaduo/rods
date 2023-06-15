@@ -48,6 +48,8 @@ def on_draw():
     global SIGNAL
     if SIGNAL is not None:
         hap2u2.add_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, SIGNAL)
+    else:
+        hap2u2.clear()
     window.clear()
     for rod in rods_menu:
         rod.draw()
