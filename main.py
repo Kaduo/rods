@@ -36,6 +36,14 @@ rods = []
 
 held_rod = None
 
+# haptic portion, comment me out when testing on computer
+hap2u2 = pyhaptic.Hap2U2()
+hap2u2.clear()
+BASE_PERIOD = 10
+signals = [pyhaptic.Signal(pyhaptic.T_SINE, 255, 0, 0, i*BASE_PERIOD, 0) for i in range(NB_RODS)]
+
+
+
 @window.event
 def on_draw():
     window.clear()
@@ -138,6 +146,7 @@ def on_mouse_press(x, y, button, modifiers):
         held_rod.anchor_y = y - held_rod.y
         held_rod.x = x
         held_rod.y = y
+        hap2u2.set_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, signals[held_rod.width//ROD_UNIT_WIDTH])
     else:
         for i, rod in enumerate(rods_menu):
             if within_rectangle(x, y, rod):
@@ -153,6 +162,7 @@ def on_mouse_press(x, y, button, modifiers):
             held_rod.anchor_y = y - held_rod.y
             held_rod.x = x
             held_rod.y = y
+            hap2u2.set_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, signals[held_rod.width // ROD_UNIT_WIDTH])
 
 
 @window.event
