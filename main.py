@@ -42,10 +42,12 @@ hap2u2.clear()
 BASE_PERIOD = 10
 signals = [pyhaptic.Signal(pyhaptic.T_SINE, 255, 0, 0, i*BASE_PERIOD, 0) for i in range(NB_RODS)]
 
-
-
+SIGNAL = None
 @window.event
 def on_draw():
+    global SIGNAL
+    if SIGNAL is not None:
+        hap2u2.set_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, SIGNAL)
     window.clear()
     for rod in rods_menu:
         rod.draw()
@@ -134,6 +136,7 @@ def relative_positionX(rec1, rec2, epsilon=0):
 
 @window.event
 def on_mouse_press(x, y, button, modifiers):
+    global SIGNAL
     global held_rod
     rod_to_hold = None
     for i, rod in enumerate(rods):
@@ -146,7 +149,7 @@ def on_mouse_press(x, y, button, modifiers):
         held_rod.anchor_y = y - held_rod.y
         held_rod.x = x
         held_rod.y = y
-        hap2u2.set_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, signals[held_rod.width//ROD_UNIT_WIDTH])
+        SIGNAL = signals[held_rod.width//ROD_UNIT_WIDTH]
     else:
         for i, rod in enumerate(rods_menu):
             if within_rectangle(x, y, rod):
@@ -162,7 +165,7 @@ def on_mouse_press(x, y, button, modifiers):
             held_rod.anchor_y = y - held_rod.y
             held_rod.x = x
             held_rod.y = y
-            hap2u2.set_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, signals[held_rod.width // ROD_UNIT_WIDTH])
+            SIGNAL = signals[held_rod.width // ROD_UNIT_WIDTH]
 
 
 @window.event
