@@ -3,6 +3,7 @@ import json
 import threading
 import time
 import websocket
+from multiprocessing import Process
 
 P_SPATIAL   = 0x00
 P_TEMPORAL  = 0x80
@@ -52,8 +53,7 @@ class Hap2U2:
         self.socket.connect("ws://localhost:1992/")
 
         self.device = evdev.InputDevice("/dev/input/event0")
-        self.thread = threading.Thread(target=self.pollTouch)
-        self.thread.daemon = True
+        self.thread = Process(target=self.pollTouch)
         self.thread.start()
 
     def set_signal(self, angle, pulses, signal):
