@@ -18,6 +18,8 @@ args = parser.parse_args()
 window = pyglet.window.Window(fullscreen=True)
 fps_display = pyglet.window.FPSDisplay(window=window)
 
+rods_batch = pyglet.graphics.Batch()
+
 colors = {"white": (238, 240, 239), "red": (210, 34, 44), "green": (65, 173, 74),
           "purple": (154, 64, 152), "yellow": (255, 221, 2), "dark_green": (2, 106, 59),
           "black": (255, 255, 255), "brown": (151, 75, 57), "blue": (2, 178, 235), "orange": (32, 225, 248)}
@@ -46,7 +48,7 @@ for i, color in enumerate(muted_colors.values()):
     rods_menu.append(
         shapes.BorderedRectangle(x=0, y=window.height - ROD_HEIGHT * NB_RODS + i * ROD_HEIGHT,
                                  width=ROD_UNIT_WIDTH * (i + 1), height=ROD_HEIGHT,
-                                 color=color, border_color=BORDER_COLOR))
+                                 color=color, border_color=BORDER_COLOR, batch=rods_batch))
 
 rods = []
 
@@ -78,12 +80,11 @@ def on_draw():
     window.clear()
     if args.fps:
         fps_display.draw()
-    for rod in rods_menu:
-        rod.draw()
-    for rod in rods:
-        rod.draw()
-    if held_rod is not None:
-        held_rod.draw()
+    rods_batch.draw()
+    # for rod in rods:
+    #     rod.draw()
+    # if held_rod is not None:
+    #     held_rod.draw()
 
 
 def true_x(rec):
@@ -191,7 +192,7 @@ def on_mouse_press(x, y, button, modifiers):
             r, g, b, _ = target_rod.color
             color = (r, g, b)
             held_rod = shapes.BorderedRectangle(x=target_rod.x, y=target_rod.y, color=color, width=target_rod.width,
-                                                height=target_rod.height, border_color=BORDER_COLOR)
+                                                height=target_rod.height, border_color=BORDER_COLOR, batch=rods_batch)
             held_rod.anchor_x = x - held_rod.x
             held_rod.anchor_y = y - held_rod.y
             held_rod.x = x
