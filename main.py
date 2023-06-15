@@ -1,3 +1,4 @@
+import copy
 from enum import Enum
 
 import pyglet
@@ -9,25 +10,33 @@ colors = {"white": (238, 240, 239), "red": (210, 34, 44), "green": (65, 173, 74)
           "purple": (154, 64, 152), "yellow": (255, 221, 2), "dark_green": (2, 106, 59),
           "black": (255, 255, 255), "brown": (151, 75, 57), "blue": (2, 178, 235), "orange": (32, 225, 248)}
 
+MUTED_OPACITY = 200
+
+muted_colors = {"white": (238, 240, 239, MUTED_OPACITY), "red": (210, 34, 44, MUTED_OPACITY), "green": (65, 173, 74, MUTED_OPACITY),
+          "purple": (154, 64, 152, MUTED_OPACITY), "yellow": (255, 221, 2, MUTED_OPACITY), "dark_green": (2, 106, 59, MUTED_OPACITY),
+          "black": (255, 255, 255, MUTED_OPACITY), "brown": (151, 75, 57, MUTED_OPACITY), "blue": (2, 178, 235, MUTED_OPACITY), "orange": (32, 225, 248, MUTED_OPACITY)}
+
 EPSILON = 0
 
 ROD_HEIGHT = 50
 ROD_UNIT_WIDTH = 100
 
-rods = []
-for i, color in enumerate(colors.values()):
-    rods.append(
+rods_menu = []
+for i, color in enumerate(muted_colors.values()):
+    rods_menu.append(
         shapes.Rectangle(x=0, y=(i + 1) * ROD_HEIGHT + 100, width=ROD_UNIT_WIDTH * (i + 1), height=ROD_HEIGHT,
                          color=color))
 
-held_rod = None
-ghost_rod = None
+rods = []
 
+held_rod = None
 
 @window.event
 def on_draw():
     window.clear()
 
+    for rod in rods_menu:
+        rod.draw()
     for rod in rods:
         rod.draw()
     if held_rod is not None:
@@ -111,25 +120,6 @@ def relative_positionX(rec1, rec2, epsilon=0):
         return RelativePosition.COMPLETELY_BOTTOM
 
 
-#
-# """Returns the position of rec2 relative to rec1, assuming the two aren't colliding"""
-#
-#
-# def relative_position(rec1, rec2):
-#     x_pos = None
-#     y_pos = None
-#     if true_x(rec2) + rec2.width < true_x(rec1):
-#         x_pos = PositionX.LEFT
-#     elif true_x(rec2) > true_x(rec1) + rec1.width:
-#         x_pos = PositionX.RIGHT
-#     if true_y(rec2) + rec2.height < true_y(rec1):
-#         y_pos = PositionY.BOTTOM
-#     elif true_y(rec2) > true_y(rec1) + rec1.height:
-#         y_pos = PositionY.TOP
-#
-#     return x_pos, y_pos
-
-
 @window.event
 def on_mouse_press(x, y, button, modifiers):
     global held_rod
@@ -144,6 +134,21 @@ def on_mouse_press(x, y, button, modifiers):
         held_rod.anchor_y = y - held_rod.y
         held_rod.x = x
         held_rod.y = y
+    else:
+        for i, rod in enumerate(rods_menu):
+            if within_rectangle(x, y, rod):
+                rod_to_hold = i
+                break
+
+        if rod_to_hold is not None:
+            target_rod = rods_menu[rod_to_hold]
+            r,g,b,_ = target_rod.color
+            color = (r,g,b)
+            held_rod = shapes.Rectangle(x=target_rod.x, y=target_rod.y, color=color, width=target_rod.width, height=target_rod.height)
+            held_rod.anchor_x = x - held_rod.x
+            held_rod.anchor_y = y - held_rod.y
+            held_rod.x = x
+            held_rod.y = y
 
 
 @window.event
@@ -186,41 +191,41 @@ def on_mouse_drag(x, y, dx, dy, button, modifiers):
                 colliding_rods.append(rod)
 
         for rod in colliding_rods:
-            match relative_positionX(rod, old_rod):
-                case RelativePosition.COMPLETELY_BOTTOM:
-                    still_blocked_y = True
-                    if not blocked_y:
-                        set_true_y(held_rod, true_y(rod) - held_rod.height)
-                    else:
-                        held_rod.y = old_y
-                    will_be_blocked_y = True
+            r_pos = relative_positionX(rod, old_rod)
+            if r_pos == RelativePosition.COMPLETELY_BOTTOM:
+                still_blocked_y = True
+                if not blocked_y:
+                    set_true_y(held_rod, true_y(rod) - held_rod.height)
+                else:
+                    held_rod.y = old_y
+                will_be_blocked_y = True
 
-                case RelativePosition.COMPLETELY_TOP:
-                    still_blocked_y = True
-                    if not blocked_y:
-                        set_true_y(held_rod, true_y(rod) + rod.height)
-                    else:
-                        held_rod.y = old_y
-                    will_be_blocked_y = True
+            elif r_pos == RelativePosition.COMPLETELY_TOP:
+                still_blocked_y = True
+                if not blocked_y:
+                    set_true_y(held_rod, true_y(rod) + rod.height)
+                else:
+                    held_rod.y = old_y
+                will_be_blocked_y = True
 
-                case RelativePosition.COMPLETELY_LEFT:
-                    still_blocked_x = True
-                    if not blocked_x:
-                        set_true_x(held_rod, true_x(rod) - held_rod.width)
-                    else:
-                        held_rod.x = old_x
-                    will_be_blocked_x = True
+            elif r_pos == RelativePosition.COMPLETELY_LEFT:
+                still_blocked_x = True
+                if not blocked_x:
+                    set_true_x(held_rod, true_x(rod) - held_rod.width)
+                else:
+                    held_rod.x = old_x
+                will_be_blocked_x = True
 
-                case RelativePosition.COMPLETELY_RIGHT:
-                    still_blocked_x = True
-                    if not blocked_x:
-                        set_true_x(held_rod, true_x(rod) + rod.width)
-                    else:
-                        held_rod.x = old_x
-                    will_be_blocked_x = True
+            elif r_pos == RelativePosition.COMPLETELY_RIGHT:
+                still_blocked_x = True
+                if not blocked_x:
+                    set_true_x(held_rod, true_x(rod) + rod.width)
+                else:
+                    held_rod.x = old_x
+                will_be_blocked_x = True
 
-                case _:
-                    print("wtf?")
+            else:
+                print("wtf?")
 
         if not still_blocked_x:
             blocked_x = False
