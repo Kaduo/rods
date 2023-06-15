@@ -18,13 +18,13 @@ muted_colors = {"white": (238, 240, 239, MUTED_OPACITY), "red": (210, 34, 44, MU
 
 EPSILON = 0
 
-ROD_HEIGHT = 10
-ROD_UNIT_WIDTH = 20
+ROD_HEIGHT = 20
+ROD_UNIT_WIDTH = 40
 
 rods_menu = []
 for i, color in enumerate(muted_colors.values()):
     rods_menu.append(
-        shapes.Rectangle(x=0, y=(i + 1) * ROD_HEIGHT + 100, width=ROD_UNIT_WIDTH * (i + 1), height=ROD_HEIGHT,
+        shapes.Rectangle(x=0, y=(i + 1) * ROD_HEIGHT, width=ROD_UNIT_WIDTH * (i + 1), height=ROD_HEIGHT,
                          color=color))
 
 rods = []
