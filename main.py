@@ -7,13 +7,16 @@ import pyhaptic
 from pyglet import shapes
 
 
+
+
 parser = ArgumentParser()
 parser.add_argument("-H", "--haptic", help="Enable haptic", action="store_true", default=False)
+parser.add_argument("-f", "--fps", help="Show fps", action="store_true", default=True)
 args = parser.parse_args()
 
 
 window = pyglet.window.Window(fullscreen=True)
-
+fps_display = pyglet.window.FPSDisplay(window=window)
 
 colors = {"white": (238, 240, 239), "red": (210, 34, 44), "green": (65, 173, 74),
           "purple": (154, 64, 152), "yellow": (255, 221, 2), "dark_green": (2, 106, 59),
@@ -73,6 +76,8 @@ def on_draw():
         else:
             hap2u2.clear()
     window.clear()
+    if args.fps:
+        fps_display.draw()
     for rod in rods_menu:
         rod.draw()
     for rod in rods:
