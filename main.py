@@ -6,14 +6,10 @@ import pyglet
 import pyhaptic
 from pyglet import shapes
 
-
-
-
 parser = ArgumentParser()
 parser.add_argument("-H", "--haptic", help="Enable haptic", action="store_true", default=False)
 parser.add_argument("-f", "--fps", help="Show fps", action="store_true", default=True)
 args = parser.parse_args()
-
 
 window = pyglet.window.Window(fullscreen=True)
 fps_display = pyglet.window.FPSDisplay(window=window)
@@ -37,10 +33,11 @@ muted_colors = {"white": (238, 240, 239, MUTED_OPACITY), "red": (210, 34, 44, MU
 
 EPSILON = 0
 
-ROD_HEIGHT = 20
-ROD_UNIT_WIDTH = 40
+ROD_HEIGHT = 30
+ROD_UNIT_WIDTH = 60
 
 BORDER_COLOR = (255, 255, 255)
+BACKGROUND_COLOR = (0, 0, 0)
 NB_RODS = 10
 
 rods_menu = []
@@ -59,7 +56,6 @@ SIGNAL = None
 signals = []
 hap2u2 = None
 
-
 # haptic portion, comment me out when testing on computer
 if args.haptic:
     hap2u2 = pyhaptic.Hap2U2()
@@ -68,11 +64,17 @@ if args.haptic:
     signals = [pyhaptic.Signal(pyhaptic.T_SINE, 255, 0, 0, i * BASE_PERIOD, 0) for i in range(NB_RODS)]
     HAPTIC = True
 
+menu_height = NB_RODS * ROD_HEIGHT
+menu_width = NB_RODS * ROD_UNIT_WIDTH
+menu_border = shapes.BorderedRectangle(x=0, y=window.height - menu_height, width=menu_width, height=menu_height,
+                                       border_color=BORDER_COLOR, color=BACKGROUND_COLOR)
+
 
 @window.event
 def on_draw():
     global SIGNAL
     window.clear()
+    menu_border.draw()
     if args.fps:
         fps_display.draw()
     rods_batch.draw()
