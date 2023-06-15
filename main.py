@@ -72,11 +72,6 @@ if args.haptic:
 @window.event
 def on_draw():
     global SIGNAL
-    if hap2u2 is not None:
-        if SIGNAL is not None:
-            hap2u2.set_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, SIGNAL)
-        else:
-            hap2u2.clear()
     window.clear()
     if args.fps:
         fps_display.draw()
@@ -180,7 +175,7 @@ def on_mouse_press(x, y, button, modifiers):
         held_rod.x = x
         held_rod.y = y
         if HAPTIC:
-            SIGNAL = signals[held_rod.width // ROD_UNIT_WIDTH - 1]
+            hap2u2.set_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, signals[held_rod.width // ROD_UNIT_WIDTH - 1])
     else:
         for i, rod in enumerate(rods_menu):
             if within_rectangle(x, y, rod):
@@ -198,13 +193,14 @@ def on_mouse_press(x, y, button, modifiers):
             held_rod.x = x
             held_rod.y = y
             if HAPTIC:
-                SIGNAL = signals[held_rod.width // ROD_UNIT_WIDTH - 1]
+                hap2u2.set_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, signals[held_rod.width // ROD_UNIT_WIDTH - 1])
 
 
 @window.event
 def on_mouse_release(x, y, button, modifiers):
     global SIGNAL
-    SIGNAL = None
+    if HAPTIC:
+        hap2u2.clear()
     global held_rod
     if held_rod is not None:
         old_anchor_x = held_rod.anchor_x
