@@ -15,6 +15,8 @@ window = pyglet.window.Window(fullscreen=True)
 fps_display = pyglet.window.FPSDisplay(window=window)
 
 rods_batch = pyglet.graphics.Batch()
+menu_rods_batch = pyglet.graphics.Batch()
+
 
 colors = {"white": (238, 240, 239), "red": (210, 34, 44), "green": (65, 173, 74),
           "purple": (154, 64, 152), "yellow": (255, 221, 2), "dark_green": (2, 106, 59),
@@ -40,12 +42,15 @@ BORDER_COLOR = (255, 255, 255)
 BACKGROUND_COLOR = (0, 0, 0)
 NB_RODS = 10
 
+OFF_SIZE = 30
+off_button = shapes.Rectangle(x=window.width - OFF_SIZE, y= window.height - OFF_SIZE, height=OFF_SIZE, width=OFF_SIZE, color=colors["red"])
+
 rods_menu = []
 for i, color in enumerate(muted_colors.values()):
     rods_menu.append(
         shapes.BorderedRectangle(x=0, y=window.height - ROD_HEIGHT * NB_RODS + i * ROD_HEIGHT,
                                  width=ROD_UNIT_WIDTH * (i + 1), height=ROD_HEIGHT,
-                                 color=color, border_color=BORDER_COLOR, batch=rods_batch))
+                                 color=color, border_color=BORDER_COLOR, batch=menu_rods_batch))
 
 rods = []
 
@@ -70,14 +75,20 @@ menu_border = shapes.BorderedRectangle(x=0, y=window.height - menu_height, width
                                        border_color=BORDER_COLOR, color=BACKGROUND_COLOR)
 
 
+HIDDEN_MENU=False
+
+
 @window.event
 def on_draw():
     global SIGNAL
     window.clear()
-    menu_border.draw()
     if args.fps:
         fps_display.draw()
+    if not HIDDEN_MENU:
+        menu_border.draw()
+        menu_rods_batch.draw()
     rods_batch.draw()
+    off_button.draw()
     # for rod in rods:
     #     rod.draw()
     # if held_rod is not None:
@@ -161,11 +172,14 @@ def relative_positionX(rec1, rec2, epsilon=0):
         return RelativePosition.COMPLETELY_BOTTOM
 
 
+
 @window.event
 def on_mouse_press(x, y, button, modifiers):
-    global SIGNAL
+    global HIDDEN_MENU
     global held_rod
     rod_to_hold = None
+    if within_rectangle(x, y, off_button):
+        HIDDEN_MENU = not HIDDEN_MENU
     for i, rod in enumerate(rods):
         if within_rectangle(x, y, rod):
             rod_to_hold = i
@@ -178,7 +192,7 @@ def on_mouse_press(x, y, button, modifiers):
         held_rod.y = y
         if HAPTIC:
             hap2u2.set_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, signals[held_rod.width // ROD_UNIT_WIDTH - 1])
-    else:
+    elif not HIDDEN_MENU:
         for i, rod in enumerate(rods_menu):
             if within_rectangle(x, y, rod):
                 rod_to_hold = i
