@@ -43,11 +43,11 @@ signals = []
 hap2u2 = None
 
 # haptic portion, comment me out when testing on computer
-# hap2u2 = pyhaptic.Hap2U2()
-# hap2u2.clear()
-# BASE_PERIOD = 20
-# signals = [pyhaptic.Signal(pyhaptic.T_SINE, 255, 0, 0, i*BASE_PERIOD, 0) for i in range(NB_RODS)]
-# HAPTIC = True
+hap2u2 = pyhaptic.Hap2U2()
+hap2u2.clear()
+BASE_PERIOD = 20
+signals = [pyhaptic.Signal(pyhaptic.T_SINE, 255, 0, 0, i*BASE_PERIOD, 0) for i in range(NB_RODS)]
+HAPTIC = True
 
 @window.event
 def on_draw():
