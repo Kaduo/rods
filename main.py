@@ -18,8 +18,8 @@ muted_colors = {"white": (238, 240, 239, MUTED_OPACITY), "red": (210, 34, 44, MU
 
 EPSILON = 0
 
-ROD_HEIGHT = 50
-ROD_UNIT_WIDTH = 100
+ROD_HEIGHT = 10
+ROD_UNIT_WIDTH = 20
 
 rods_menu = []
 for i, color in enumerate(muted_colors.values()):
@@ -34,7 +34,6 @@ held_rod = None
 @window.event
 def on_draw():
     window.clear()
-    print("hello")
     for rod in rods_menu:
         rod.draw()
     for rod in rods:
@@ -122,7 +121,6 @@ def relative_positionX(rec1, rec2, epsilon=0):
 
 @window.event
 def on_mouse_press(x, y, button, modifiers):
-    print("hi")
     global held_rod
     rod_to_hold = None
     for i, rod in enumerate(rods):
