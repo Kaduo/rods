@@ -1,11 +1,19 @@
 import threading
 from enum import Enum
+from argparse import ArgumentParser
 
 import pyglet
 import pyhaptic
 from pyglet import shapes
 
+
+parser = ArgumentParser()
+parser.add_argument("-H", "--haptic", help="Enable haptic", action="store_true", default=False)
+args = parser.parse_args()
+
+
 window = pyglet.window.Window(fullscreen=True)
+
 
 colors = {"white": (238, 240, 239), "red": (210, 34, 44), "green": (65, 173, 74),
           "purple": (154, 64, 152), "yellow": (255, 221, 2), "dark_green": (2, 106, 59),
@@ -46,12 +54,14 @@ SIGNAL = None
 signals = []
 hap2u2 = None
 
+
 # haptic portion, comment me out when testing on computer
-hap2u2 = pyhaptic.Hap2U2()
-hap2u2.clear()
-BASE_PERIOD = 20
-signals = [pyhaptic.Signal(pyhaptic.T_SINE, 255, 0, 0, i * BASE_PERIOD, 0) for i in range(NB_RODS)]
-HAPTIC = True
+if args.haptic:
+    hap2u2 = pyhaptic.Hap2U2()
+    hap2u2.clear()
+    BASE_PERIOD = 20
+    signals = [pyhaptic.Signal(pyhaptic.T_SINE, 255, 0, 0, i * BASE_PERIOD, 0) for i in range(NB_RODS)]
+    HAPTIC = True
 
 
 @window.event
@@ -275,5 +285,4 @@ def on_mouse_drag(x, y, dx, dy, button, modifiers):
             blocked_y = True
 
 
-thread = threading.Thread(target=pyglet.app.run)
-thread.start()
+pyglet.app.run()
