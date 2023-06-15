@@ -1,3 +1,4 @@
+import threading
 from enum import Enum
 
 import pyglet
@@ -36,20 +37,26 @@ rods = []
 
 held_rod = None
 
-# haptic portion, comment me out when testing on computer
-hap2u2 = pyhaptic.Hap2U2()
-hap2u2.clear()
-BASE_PERIOD = 20
-signals = [pyhaptic.Signal(pyhaptic.T_SINE, 255, 0, 0, i*BASE_PERIOD, 0) for i in range(NB_RODS)]
-
+HAPTIC = False
 SIGNAL = None
+signals = []
+hap2u2 = None
+
+# haptic portion, comment me out when testing on computer
+# hap2u2 = pyhaptic.Hap2U2()
+# hap2u2.clear()
+# BASE_PERIOD = 20
+# signals = [pyhaptic.Signal(pyhaptic.T_SINE, 255, 0, 0, i*BASE_PERIOD, 0) for i in range(NB_RODS)]
+# HAPTIC = True
+
 @window.event
 def on_draw():
     global SIGNAL
-    if SIGNAL is not None:
-        hap2u2.add_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, SIGNAL)
-    else:
-        hap2u2.clear()
+    if hap2u2 is not None:
+        if SIGNAL is not None:
+            hap2u2.add_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, SIGNAL)
+        else:
+            hap2u2.clear()
     window.clear()
     for rod in rods_menu:
         rod.draw()
@@ -151,7 +158,8 @@ def on_mouse_press(x, y, button, modifiers):
         held_rod.anchor_y = y - held_rod.y
         held_rod.x = x
         held_rod.y = y
-        SIGNAL = signals[held_rod.width//ROD_UNIT_WIDTH]
+        if HAPTIC:
+            SIGNAL = signals[held_rod.width//ROD_UNIT_WIDTH]
     else:
         for i, rod in enumerate(rods_menu):
             if within_rectangle(x, y, rod):
@@ -167,7 +175,8 @@ def on_mouse_press(x, y, button, modifiers):
             held_rod.anchor_y = y - held_rod.y
             held_rod.x = x
             held_rod.y = y
-            SIGNAL = signals[held_rod.width // ROD_UNIT_WIDTH]
+            if HAPTIC:
+                SIGNAL = signals[held_rod.width // ROD_UNIT_WIDTH]
 
 
 @window.event
@@ -258,4 +267,5 @@ def on_mouse_drag(x, y, dx, dy, button, modifiers):
             blocked_y = True
 
 
-pyglet.app.run()
+thread = threading.Thread(target=pyglet.app.run)
+thread.start()
