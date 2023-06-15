@@ -54,7 +54,7 @@ def on_draw():
     global SIGNAL
     if hap2u2 is not None:
         if SIGNAL is not None:
-            hap2u2.add_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, SIGNAL)
+            hap2u2.set_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, SIGNAL)
         else:
             hap2u2.clear()
     window.clear()
@@ -181,6 +181,8 @@ def on_mouse_press(x, y, button, modifiers):
 
 @window.event
 def on_mouse_release(x, y, button, modifiers):
+    global SIGNAL
+    SIGNAL = None
     global held_rod
     if held_rod is not None:
         old_anchor_x = held_rod.anchor_x
