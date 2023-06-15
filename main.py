@@ -34,7 +34,7 @@ held_rod = None
 @window.event
 def on_draw():
     window.clear()
-
+    print("hello")
     for rod in rods_menu:
         rod.draw()
     for rod in rods:
