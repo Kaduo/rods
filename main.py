@@ -18,20 +18,35 @@ rods_batch = pyglet.graphics.Batch()
 menu_rods_batch = pyglet.graphics.Batch()
 
 
-colors = {"white": (238, 240, 239), "red": (210, 34, 44), "green": (65, 173, 74),
-          "purple": (154, 64, 152), "yellow": (255, 221, 2), "dark_green": (2, 106, 59),
-          "black": (255, 255, 255), "brown": (151, 75, 57), "blue": (2, 178, 235), "orange": (32, 225, 248)}
+colors = {
+    "white": (238, 240, 239),
+    "red": (210, 34, 44),
+    "green": (65, 173, 74),
+    "purple": (154, 64, 152),
+    "yellow": (255, 221, 2),
+    "dark_green": (2, 106, 59),
+    "black": (255, 255, 255),
+    "brown": (151, 75, 57),
+    "blue": (2, 178, 235),
+    "orange": (32, 225, 248),
+}
 
 MUTED_OPACITY = 200
 
 print(window.width, window.height)
 
-muted_colors = {"white": (238, 240, 239, MUTED_OPACITY), "red": (210, 34, 44, MUTED_OPACITY),
-                "green": (65, 173, 74, MUTED_OPACITY),
-                "purple": (154, 64, 152, MUTED_OPACITY), "yellow": (255, 221, 2, MUTED_OPACITY),
-                "dark_green": (2, 106, 59, MUTED_OPACITY),
-                "black": (255, 255, 255, MUTED_OPACITY), "brown": (151, 75, 57, MUTED_OPACITY),
-                "blue": (2, 178, 235, MUTED_OPACITY), "orange": (32, 225, 248, MUTED_OPACITY)}
+muted_colors = {
+    "white": (238, 240, 239, MUTED_OPACITY),
+    "red": (210, 34, 44, MUTED_OPACITY),
+    "green": (65, 173, 74, MUTED_OPACITY),
+    "purple": (154, 64, 152, MUTED_OPACITY),
+    "yellow": (255, 221, 2, MUTED_OPACITY),
+    "dark_green": (2, 106, 59, MUTED_OPACITY),
+    "black": (255, 255, 255, MUTED_OPACITY),
+    "brown": (151, 75, 57, MUTED_OPACITY),
+    "blue": (2, 178, 235, MUTED_OPACITY),
+    "orange": (32, 225, 248, MUTED_OPACITY),
+}
 
 EPSILON = 0
 
@@ -43,14 +58,27 @@ BACKGROUND_COLOR = (0, 0, 0)
 NB_RODS = 10
 
 OFF_SIZE = 40
-off_button = shapes.Rectangle(x=window.width - OFF_SIZE, y= window.height - OFF_SIZE, height=OFF_SIZE, width=OFF_SIZE, color=colors["red"])
+off_button = shapes.Rectangle(
+    x=window.width - OFF_SIZE,
+    y=window.height - OFF_SIZE,
+    height=OFF_SIZE,
+    width=OFF_SIZE,
+    color=colors["red"],
+)
 
 rods_menu = []
 for i, color in enumerate(muted_colors.values()):
     rods_menu.append(
-        shapes.BorderedRectangle(x=0, y=window.height - ROD_HEIGHT * NB_RODS + i * ROD_HEIGHT,
-                                 width=ROD_UNIT_WIDTH * (i + 1), height=ROD_HEIGHT,
-                                 color=color, border_color=BORDER_COLOR, batch=menu_rods_batch))
+        shapes.BorderedRectangle(
+            x=0,
+            y=window.height - ROD_HEIGHT * NB_RODS + i * ROD_HEIGHT,
+            width=ROD_UNIT_WIDTH * (i + 1),
+            height=ROD_HEIGHT,
+            color=color,
+            border_color=BORDER_COLOR,
+            batch=menu_rods_batch,
+        )
+    )
 
 rods = []
 
@@ -66,16 +94,24 @@ if args.haptic:
     hap2u2 = pyhaptic.Hap2U2()
     hap2u2.clear()
     BASE_PERIOD = 20
-    signals = [pyhaptic.Signal(pyhaptic.T_SINE, 255, 0, 0, i * BASE_PERIOD, 0) for i in range(NB_RODS)]
+    signals = [
+        pyhaptic.Signal(pyhaptic.T_SINE, 255, 0, 0, i * BASE_PERIOD, 0) for i in range(NB_RODS)
+    ]
     HAPTIC = True
 
 menu_height = NB_RODS * ROD_HEIGHT
 menu_width = NB_RODS * ROD_UNIT_WIDTH
-menu_border = shapes.BorderedRectangle(x=0, y=window.height - menu_height, width=menu_width, height=menu_height,
-                                       border_color=BORDER_COLOR, color=BACKGROUND_COLOR)
+menu_border = shapes.BorderedRectangle(
+    x=0,
+    y=window.height - menu_height,
+    width=menu_width,
+    height=menu_height,
+    border_color=BORDER_COLOR,
+    color=BACKGROUND_COLOR,
+)
 
 
-HIDDEN_MENU=False
+HIDDEN_MENU = False
 
 
 @window.event
@@ -112,7 +148,9 @@ def set_true_y(rec, y):
 
 
 def within_rectangle(x, y, rec):
-    return true_x(rec) < x < (true_x(rec) + rec.width) and true_y(rec) < y < (true_y(rec) + rec.height)
+    return true_x(rec) < x < (true_x(rec) + rec.width) and true_y(rec) < y < (
+        true_y(rec) + rec.height
+    )
 
 
 def collide(rec1, rec2, epsilon=0):
@@ -172,7 +210,6 @@ def relative_positionX(rec1, rec2, epsilon=0):
         return RelativePosition.COMPLETELY_BOTTOM
 
 
-
 @window.event
 def on_mouse_press(x, y, button, modifiers):
     global HIDDEN_MENU
@@ -191,7 +228,11 @@ def on_mouse_press(x, y, button, modifiers):
         held_rod.x = x
         held_rod.y = y
         if HAPTIC:
-            hap2u2.set_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, signals[held_rod.width // ROD_UNIT_WIDTH - 1])
+            hap2u2.set_signal(
+                pyhaptic.ISOTROPIC,
+                pyhaptic.PERMANENT,
+                signals[held_rod.width // ROD_UNIT_WIDTH - 1],
+            )
     elif not HIDDEN_MENU:
         for i, rod in enumerate(rods_menu):
             if within_rectangle(x, y, rod):
@@ -202,14 +243,25 @@ def on_mouse_press(x, y, button, modifiers):
             target_rod = rods_menu[rod_to_hold]
             r, g, b, _ = target_rod.color
             color = (r, g, b)
-            held_rod = shapes.BorderedRectangle(x=target_rod.x, y=target_rod.y, color=color, width=target_rod.width,
-                                                height=target_rod.height, border_color=BORDER_COLOR, batch=rods_batch)
+            held_rod = shapes.BorderedRectangle(
+                x=target_rod.x,
+                y=target_rod.y,
+                color=color,
+                width=target_rod.width,
+                height=target_rod.height,
+                border_color=BORDER_COLOR,
+                batch=rods_batch,
+            )
             held_rod.anchor_x = x - held_rod.x
             held_rod.anchor_y = y - held_rod.y
             held_rod.x = x
             held_rod.y = y
             if HAPTIC:
-                hap2u2.set_signal(pyhaptic.ISOTROPIC, pyhaptic.PERMANENT, signals[held_rod.width // ROD_UNIT_WIDTH - 1])
+                hap2u2.set_signal(
+                    pyhaptic.ISOTROPIC,
+                    pyhaptic.PERMANENT,
+                    signals[held_rod.width // ROD_UNIT_WIDTH - 1],
+                )
 
 
 @window.event
@@ -241,7 +293,9 @@ def on_mouse_drag(x, y, dx, dy, button, modifiers):
     if held_rod is not None:
         old_x = held_rod.x
         old_y = held_rod.y
-        old_rod = shapes.Rectangle(x=true_x(held_rod), y=true_y(held_rod), width=held_rod.width, height=held_rod.height)
+        old_rod = shapes.Rectangle(
+            x=true_x(held_rod), y=true_y(held_rod), width=held_rod.width, height=held_rod.height
+        )
 
         held_rod.x = x
         held_rod.y = y
